@@ -239,7 +239,7 @@ static ssize_t tsl2591_gain_store(struct device *dev,
 	struct tsl2591 *tsl2591 = iio_priv(indio_dev);
 	unsigned long value;
 
-	if (strict_strtoul(buf, 0, &value))
+	if (kstrtoul(buf, 0, &value))
 		return -EINVAL;
 
 	// Only allow 0->3 range
@@ -268,7 +268,7 @@ static ssize_t tsl2591_int_time_store(struct device *dev,
 	struct tsl2591 *tsl2591 = iio_priv(indio_dev);
 	unsigned long value;
 
-	if (strict_strtoul(buf, 0, &value))
+	if (kstrtoul(buf, 0, &value))
 		return -EINVAL;
 
 	// Only allow 100->600 range
