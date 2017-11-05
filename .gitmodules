@@ -1,0 +1,3 @@
+[submodule "mcp9808"]
+	path = mcp9808_chardev
+	url = https://github.com/savoca/mcp9808.git
