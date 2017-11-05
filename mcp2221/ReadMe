@@ -1,0 +1,127 @@
+
+MCP2221 I2C bus driver v0.1
+=============================
+The driver was designed to expose an I2C bus and to be used with i2c-tools
+package.
+
+How to use it
+=============
+1. Please make sure you have the kernel headers
+	Open a terminal and type the following:
+	on Ubuntu/Debian: 
+	"sudo apt-get install linux-headers-$(uname -r)"
+	
+	on Fedora/Redhat: 
+	"sudo yum install kernel-headers-`uname -r` kernel-devel-`uname -r`"
+
+2. Unpack, compile the driver and install it
+	Unpack the downloaded archive file into the directory of choice.
+	Open a terminal and navigate into the directory created after
+	unpacking the downloaded archive file.
+	
+	Type the following:
+	"make modules"
+	"sudo make install"
+
+3. Due to the fact that MCP2221 uses HID class (for I2C, ADC, DAC, GPIO, ...),
+Linux will load first an HID driver if available (e.g. hidraw). This driver 
+takes over the MCP2221 HID interface
+
+4. To make the I2C driver work with MCP2221, execute as root the 
+"driver_load.sh" script.
+To run the script please type:
+	"sudo driver_load.sh"
+
+5. Now, you should have an entry for the I2C bus driver provided by MCP2221
+
+6. You can use the i2c-tools package to exercise the I2C bus or you can 
+develop your own application.
+	
+	To install the i2c-tools package
+	Open a terminal and type the following:
+	on Ubuntu/Debian:
+	"sudo apt-get install i2c-tools"
+	
+	on Fedora/Redhat:
+	"sudo yum install i2c-tools"
+
+Exercising the I2C bus
+======================
+- The "i2c-tools" package allows the user to easily interact with the 
+I2C bus provided by the MCP2221 I2C-bus driver
+
+Here are a few example commands:
+	"sudo i2cdetect -l"
+	
+The output of this command should be something like:
+	i2c-0	i2c       	i2c-mcp2221 at bus 002 device 003	I2C adapter
+
+IMPORTANT
+=========
+In this case, the MCP2221 board is mapped as I2C bus 0. In your system 
+you might have other I2C busses besides the one provided my MCP2221.
+Please check the output of the "sudo i2cdetect -l" and select the bus 
+number assigned to your MCP2221 board(s).
+The examples below assume the MCP2221 board is assigned to I2C bus 0.
+
+To detect the I2C slave chips attached to the MCP2221 you can type:
+	"sudo i2cdetect -y 0"
+	
+The output should show the address of the detected I2C slave chips:
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: 20 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- 48 49 -- -- -- 4d -- -- 
+50: 50 51 52 53 54 55 56 57 -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --                         
+	
+Note!
+	In this example we've used a PICkit Serial I2C Demo Board.
+	The detect addresses are those of the I2C slave chips present on 
+	this board (24LC08, MCP9800, MCP3221, TC1321, MCP23008)
+	
+Example commands to use with the MCP23008 I/O expander
+=======================================================
+	This is a simple "visual" example on how to use the MCP23008 I/Os.
+	The I/O pins are connected to 8 LEDs. We will make all the I/Os as 
+GPIO outputs and then we will send a hec value to the MCP23008's I/O 
+port, thus showing a nice LED pattern.
+	Please type:
+	
+	"sudo i2cset -y 0 0x20 0x00 0x00 b"
+	The above command will set the MCP23008's GPIO port as all outputs
+	
+	"sudo i2cset -y 0 0x20 0x0A 0x55 b"
+	This command will output a hex value of 0x55 to the port. All the 
+LEDs whose corresponding bit is set to 1 will be lit. Instead of "0x55" 
+you can try any other byte value
+
+	To get a snapshot of all the registers within MCP23008 you can type:
+	"sudo i2cdump -y -r 0x00-0x0A 0 0x20 b"
+	
+	You should see an output such as:
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: 00 00 00 00 00 00 00 00 00 55 55                   .........UU     
+
+More documentation on the "i2c-tools" can be found at the below links:
+
+	http://www.lm-sensors.org/wiki/i2cToolsDocumentation
+	http://elinux.org/Interfacing_with_I2C_Devices
+
+- You can create your own applications to exercise the I2C bus provided
+by the MCP2221 I2C driver
+
+Known limitations
+=================
+- The driver only supports I2C reads or writes of up to 60 bytes
+- Repeated start not implemented in the driver
+
+To do
+=====
+- implement longer I2C reads/writes of up to 65535 bytes
+- implement native SMBus operation support using MCP2221's native capabilities
+- add support for GPIO and other MCP2221 capabilities (ADC, DAC, ...)
+
