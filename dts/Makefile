@@ -1,6 +1,7 @@
-.PHONY: all clean dump
+.PHONY: all clean dump install
 
-DTBO = mysensors.dtbo
+NAME = mysensors
+DTBO = $(NAME).dtbo
 
 all: $(DTBO)
 
@@ -13,3 +14,8 @@ clean:
 
 dump: $(DTBO)
 	fdtdump $<
+
+install:
+	-mount -t configfs none /sys/kernel/config
+	mkdir -p /sys/kernel/config/device-tree/overlays/$(NAME)
+	cp $(DTBO) /sys/kernel/config/device-tree/overlays/$(NAME)/dtbo
