@@ -1,4 +1,4 @@
-.PHONY: all install clean
+.PHONY: all install clean uninstall
 
 KSRC    = /lib/modules/$(shell uname -r)/build/
 KMODDIR = /lib/modules/$(shell uname -r)/misc/

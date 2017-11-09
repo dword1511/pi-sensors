@@ -1,4 +1,4 @@
-.PHONY: all clean dump install
+.PHONY: all clean dump install uninstall
 
 NAME = mysensors
 DTBO = $(NAME).dtbo
@@ -16,6 +16,10 @@ dump: $(DTBO)
 	fdtdump $<
 
 install: $(DTBO)
+	@echo "NOTE: this shuould be called after modules are loaded."
 	mount | grep configfs || mount -t configfs none /sys/kernel/config
 	mkdir -p /sys/kernel/config/device-tree/overlays/$(NAME)
 	cp $(DTBO) /sys/kernel/config/device-tree/overlays/$(NAME)/dtbo
+
+uninstall:
+	rmdir /sys/kernel/config/device-tree/overlays/$(NAME)
