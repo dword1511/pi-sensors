@@ -16,6 +16,6 @@ dump: $(DTBO)
 	fdtdump $<
 
 install: $(DTBO)
-	-mount -t configfs none /sys/kernel/config
+	mount | grep configfs || mount -t configfs none /sys/kernel/config
 	mkdir -p /sys/kernel/config/device-tree/overlays/$(NAME)
 	cp $(DTBO) /sys/kernel/config/device-tree/overlays/$(NAME)/dtbo
