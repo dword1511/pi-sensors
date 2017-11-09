@@ -25,6 +25,7 @@
   };
 
   /* iio-hwmon bridge */
+  /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
   fragment@2 {
     target-path="/";
     __overlay__ {
