@@ -50,7 +50,7 @@
 
   /* sensors */
   fragment@3 {
-    target = <&i2c_arm>;
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
     __overlay__ {
       #address-cells = <1>; /* 1 for i2c devices */
       #size-cells = <0>;    /* 0 for i2c devices */
