@@ -1,19 +1,25 @@
 .PHONY: all install clean
 
-obj-m += tmp007.o tsl2591.o iio_hwmon.o hmc5843_core.o hmc5843_i2c.o hmc5843_spi.o
+KSRC    = /lib/modules/$(shell uname -r)/build/
+KMODDIR = /lib/modules/$(shell uname -r)/misc/
 
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+KMODS   = tmp007 tsl2591 hmc5843_core hmc5843_i2c hmc5843_spi iio_hwmon
 
-install:
-	#make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules_install
-	install -p -m 644 tmp007.ko /lib/modules/$(shell uname -r)/misc
-	install -p -m 644 tsl2591.ko /lib/modules/$(shell uname -r)/misc
-	install -p -m 644 iio_hwmon.ko /lib/modules/$(shell uname -r)/misc
-	install -p -m 644 hmc5843_core.ko /lib/modules/$(shell uname -r)/misc
-	install -p -m 644 hmc5843_i2c.ko /lib/modules/$(shell uname -r)/misc
-	install -p -m 644 hmc5843_spi.ko /lib/modules/$(shell uname -r)/misc
+KMODSRC = $(KMODS:=.c)
+KOS     = $(KMODS:=.ko)
+
+obj-m  += $(KMODS:=.o)
+
+all: $(KMODSRC)
+	make -C $(KSRC) M=$(PWD) modules
+
+install: $(KOS)
+	mkdir -p $(KMODDIR)
+	for ko in $(KOS); do install -p -m 644 $$ko $(KMODDIR); done
 	depmod -a
 
+uninstall:
+	if [ -d $(KMODDIR) ]; then for ko in $(KOS); do rm -f $(KMODDIR)/$$ko; done; fi
+
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	make -C $(KSRC) M=$(PWD) clean
