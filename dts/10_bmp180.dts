@@ -26,9 +26,14 @@
         temp-measurement-period = <100>;
         default-oversampling = <3>; /* NOTE: needs verification, documentation might be out-dated */
       };
+    };
+  };
 
-      /* iio-hwmon bridge */
-      /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
+  /* iio-hwmon bridge */
+  /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
+  fragment@1 {
+    target = <&soc>;
+    __overlay__ {
       iio-hwmon {
         compatible = "iio-hwmon"; /* NOTE: in-tree but not compiled */
         status = "okay";
