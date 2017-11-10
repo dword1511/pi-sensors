@@ -1,7 +1,7 @@
-.PHONY: all clean dump install uninstall
+.PHONY: all clean dump load unload
 
-NAME = mysensors
-DTBO = $(NAME).dtbo
+NAME = $(basename $(wildcard *.dts))
+DTBO = $(NAME:=.dtbo)
 
 all: $(DTBO)
 
@@ -13,13 +13,19 @@ clean:
 	rm -f $(DTBO)
 
 dump: $(DTBO)
-	fdtdump $<
+	for n in $(DTBO); do \
+		fdtdump $$n; \
+	done
 
-install: $(DTBO)
+load: $(DTBO)
 	@echo "NOTE: this shuould be called after modules are loaded."
 	mount | grep configfs || mount -t configfs none /sys/kernel/config
-	mkdir -p /sys/kernel/config/device-tree/overlays/$(NAME)
-	cp $(DTBO) /sys/kernel/config/device-tree/overlays/$(NAME)/dtbo
+	for n in $(NAME); do \
+		mkdir -p /sys/kernel/config/device-tree/overlays/$$n; \
+		cp $(DTBO) /sys/kernel/config/device-tree/overlays/$$n/dtbo; \
+	done
 
-uninstall:
-	rmdir /sys/kernel/config/device-tree/overlays/$(NAME)
+unload:
+	for n in $(NAME); do \
+		rmdir /sys/kernel/config/device-tree/overlays/$$n; \
+	done

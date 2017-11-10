@@ -1,0 +1,43 @@
+/* NOTE: iio-hwmon: https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/iio-bindings.txt */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "brcm,bcm2708"; /* probably will soon be bcm2835? */
+
+  fragment@0 {
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
+    __overlay__ {
+      #address-cells = <1>; /* 1 for i2c devices */
+      #size-cells = <0>;    /* 0 for i2c devices */
+      status = "okay";
+
+      bmp180: bmp180@77 {
+        /* i2c */
+        compatible = "bosch,bmp180"; /* NOTE: load bmp280_i2c */
+        reg = <0x77>;
+        status = "okay";
+
+        /* iio */
+        #io-channel-cells = <1>; /* 1 for multiple channels */
+
+        /* iio/pressure/bmp280 special config */
+        temp-measurement-period = <100>;
+        default-oversampling = <3>; /* NOTE: needs verification, documentation might be out-dated */
+      };
+
+      /* iio-hwmon bridge */
+      /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
+      iio-hwmon {
+        compatible = "iio-hwmon"; /* NOTE: in-tree but not compiled */
+        status = "okay";
+
+        io-channels = <&bmp180 0>, <&bmp180 1>;
+        /*
+        io-channel-names = "pressure", "temp";
+        */
+      };
+    };
+  };
+};

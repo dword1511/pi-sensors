@@ -24,33 +24,8 @@
       };
   };
 
-  /* iio-hwmon bridge */
-  /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
-  fragment@2 {
-    target-path="/";
-    __overlay__ {
-      iio-hwmon {
-        compatible = "iio-hwmon"; /* NOTE: in-tree but not compiled */
-        status = "okay";
-
-        io-channels =
-          <&bmp180 0>, <&bmp180 1>,
-          <&htu21 0>, <&htu21 1>,
-          <&tmp007 0>, <&tmp007 1>,
-          <&tsl2591 0>, <&tsl2591 1>,
-          <&hmc5883l 0>, <&hmc5883l 1>, <&hmc5883l 2>;
-        io-channel-names =
-          "pressure", "temp",
-          "temp", "humidity",
-          "ambient", "object",
-          "all", "ir",
-          "x", "y", "z";
-      };
-    };
-  };
-
   /* sensors */
-  fragment@3 {
+  fragment@2 {
     target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
     __overlay__ {
       #address-cells = <1>; /* 1 for i2c devices */
@@ -136,7 +111,26 @@
         /* iio/light/tsl2591 special config */
         /* (NONE) */
       };
+
+      /* iio-hwmon bridge */
+      /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
+      iio-hwmon {
+        compatible = "iio-hwmon"; /* NOTE: in-tree but not compiled */
+        status = "okay";
+
+        io-channels =
+          <&bmp180 0>, <&bmp180 1>,
+          <&htu21 0>, <&htu21 1>,
+          <&tmp007 0>, <&tmp007 1>,
+          <&tsl2591 0>, <&tsl2591 1>,
+          <&hmc5883l 0>, <&hmc5883l 1>, <&hmc5883l 2>;
+        io-channel-names =
+          "pressure", "temp",
+          "temp", "humidity",
+          "ambient", "object",
+          "all", "ir",
+          "x", "y", "z";
+      };
     };
   };
-
 };
