@@ -26,6 +26,8 @@ load: $(DTBO)
 	done
 
 unload:
+	@echo "WARNING: more likely than not this will not work!"
+	@echo "         The patch for dynamic unloading via configfs has not been merged as of kernel v4.9."
 	for n in $(NAME); do \
 		rmdir /sys/kernel/config/device-tree/overlays/$$n; \
 	done

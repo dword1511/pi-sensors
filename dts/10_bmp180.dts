@@ -1,5 +1,3 @@
-/* NOTE: iio-hwmon: https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/iio-bindings.txt */
-
 /dts-v1/;
 /plugin/;
 
@@ -23,25 +21,27 @@
         #io-channel-cells = <1>; /* 1 for multiple channels */
 
         /* iio/pressure/bmp280 special config */
-        temp-measurement-period = <100>;
+        temp-measurement-period = <500>;
         default-oversampling = <3>; /* NOTE: needs verification, documentation might be out-dated */
+        /* TODO: should disable IRQ (only BMP085 has this but it has the same ID as BMP180.) */
       };
     };
   };
 
   /* iio-hwmon bridge */
-  /* This should mirror iio channels to hwmon subsystem, which can then be hooked to collectd. */
+  /* NOTE: in-tree but not compiled */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
   fragment@1 {
     target = <&soc>;
     __overlay__ {
-      iio-hwmon {
-        compatible = "iio-hwmon"; /* NOTE: in-tree but not compiled */
-        status = "okay";
+      iio-hwmon-bmp180-pressure {
+        compatible = "iio-hwmon";
+        io-channels = <&bmp180 0>;
+      };
 
-        io-channels = <&bmp180 0>, <&bmp180 1>;
-        /*
-        io-channel-names = "pressure", "temp";
-        */
+      iio-hwmon-bmp180-temp {
+        compatible = "iio-hwmon"; 
+        io-channels = <&bmp180 1>;
       };
     };
   };

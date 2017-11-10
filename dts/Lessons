@@ -1,3 +1,3 @@
-* Split your dts file so when kernel crashes you know which part is offending.
+* Split your dts file so when kernel crashes you know which part is offending. Also pay attention to sysfs size limits.
 * i2c_arm is no longer a thing, it is probably left-over in the tutorial. Use i2c1.
 * iio-hwmon can be included at any level, but must be able to access the phandle in the same overlay.
