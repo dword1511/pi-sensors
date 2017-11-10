@@ -22,7 +22,7 @@ load: $(DTBO)
 	mount | grep configfs || mount -t configfs none /sys/kernel/config
 	for n in $(NAME); do \
 		mkdir -p /sys/kernel/config/device-tree/overlays/$$n; \
-		cp $(DTBO) /sys/kernel/config/device-tree/overlays/$$n/dtbo; \
+		cp $$n /sys/kernel/config/device-tree/overlays/$$n/dtbo; \
 	done
 
 unload:
