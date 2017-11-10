@@ -20,12 +20,12 @@ dump: $(DTBO)
 load: $(DTBO)
 	@echo "NOTE: this shuould be called after modules are loaded."
 	mount | grep configfs || mount -t configfs none /sys/kernel/config
-	for n in $<; do \
+	for n in $(NAME); do \
 		mkdir -p /sys/kernel/config/device-tree/overlays/$$n; \
-		cp $$n /sys/kernel/config/device-tree/overlays/$$n/dtbo; \
+		cp $$n.dtbo /sys/kernel/config/device-tree/overlays/$$n/dtbo; \
 	done
 
 unload:
-	for n in $(DTBO); do \
+	for n in $(NAME); do \
 		rmdir /sys/kernel/config/device-tree/overlays/$$n; \
 	done
