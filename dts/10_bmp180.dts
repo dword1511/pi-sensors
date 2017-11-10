@@ -34,14 +34,9 @@
   fragment@1 {
     target = <&soc>;
     __overlay__ {
-      iio-hwmon-bmp180-pressure {
+      iio-hwmon-bmp180 {
         compatible = "iio-hwmon";
-        io-channels = <&bmp180 0>;
-      };
-
-      iio-hwmon-bmp180-temp {
-        compatible = "iio-hwmon"; 
-        io-channels = <&bmp180 1>;
+        io-channels = <&bmp180 0>, <&bmp180 1>;
       };
     };
   };
