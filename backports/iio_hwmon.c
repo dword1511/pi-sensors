@@ -134,22 +134,22 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 			break;
 		case IIO_PRESSURE:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "pressure%d_input",
+							       "in%d_input",
 							       in_i++);
 			break;
 		case IIO_LIGHT:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "light%d_input",
+							       "in%d_input",
 							       in_i++);
 			break;
 		case IIO_INTENSITY:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "intensity%d_input",
+							       "in%d_input",
 							       in_i++);
 			break;
 		case IIO_MAGN:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "magn%d_input",
+							       "in%d_input",
 							       in_i++);
 			break;
 		default:
