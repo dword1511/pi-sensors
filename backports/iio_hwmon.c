@@ -69,24 +69,25 @@ static ssize_t iio_hwmon_read_label(struct device *dev,
 
 	if (name == NULL) {
 		switch (state->channels[sattr->index].channel->type) {
+		/* NOTE: skipping SI unit for well-defined hwmon type */
 		case IIO_VOLTAGE:
-			return sprintf(buf, "Voltage %d\n", sattr->index + 1);
+			return sprintf(buf, "Voltage %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
 		case IIO_TEMP:
-			return sprintf(buf, "Temperature %d\n", sattr->index + 1);
+			return sprintf(buf, "Temperature %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
 		case IIO_CURRENT:
-			return sprintf(buf, "Current %d\n", sattr->index + 1);
+			return sprintf(buf, "Current %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
 		case IIO_HUMIDITYRELATIVE:
-			return sprintf(buf, "Humidity %d\n", sattr->index + 1);
+			return sprintf(buf, "Humidity %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
 		case IIO_PRESSURE:
-			return sprintf(buf, "Pressure %d%s\n", sattr->index + 1, is_raw ? "RAW" : "kPa");
+			return sprintf(buf, "Pressure %d %s\n", sattr->index + 1, is_raw ? "RAW" : "kPa");
 		case IIO_LIGHT:
-			return sprintf(buf, "Light %d%s\n", sattr->index + 1, is_raw ? "RAW" : "kLx");
+			return sprintf(buf, "Light %d %s\n", sattr->index + 1, is_raw ? "RAW" : "kLx");
 		case IIO_INTENSITY:
 			return sprintf(buf, "Intensity %d\n", sattr->index + 1); /* Most likely RAW, for color sensors? */
 		case IIO_MAGN:
-			return sprintf(buf, "Magnetic flux %d%s\n", sattr->index + 1, is_raw ? "RAW" : "mT");
+			return sprintf(buf, "Magnetic flux %d %s\n", sattr->index + 1, is_raw ? "RAW" : "mT");
 		default:
-			return sprintf(buf, "Channel %d%s\n", sattr->index + 1, is_raw ? "RAW" : "SI");
+			return sprintf(buf, "Channel %d %s\n", sattr->index + 1, is_raw ? "RAW" : "SI");
 		}
 	}
 
