@@ -11,19 +11,17 @@
       #size-cells = <0>;    /* 0 for i2c devices */
       status = "okay";
 
-      bmp180: bmp180@77 {
+      htu21: htu21@40 {
         /* i2c */
-        compatible = "bosch,bmp180"; /* NOTE: load bmp280_i2c */
-        reg = <0x77>;
+        compatible = "htu21"; /* NOTE: will become "meas,htu21" in newer kernels */
+        reg = <0x40>;
         status = "okay";
 
         /* iio */
         #io-channel-cells = <1>; /* 1 for multiple channels */
 
-        /* iio/pressure/bmp280 special config */
-        temp-measurement-period = <500>;
-        default-oversampling = <3>; /* NOTE: needs verification, documentation might be out-dated */
-        /* TODO: should disable IRQ (only BMP085 has this but it has the same ID as BMP180.) */
+        /* iio/humidity/htu21 special config */
+        /* (NONE) */
       };
     };
   };
@@ -34,10 +32,10 @@
   fragment@1 {
     target = <&soc>;
     __overlay__ {
-      iio-hwmon-bmp180 {
+      iio-hwmon-htu21 {
         compatible = "iio-hwmon";
-        io-channels = <&bmp180 0>, <&bmp180 1>;
-        io-channel-names = "Pressure kPa", "Ambient";
+        io-channels = <&htu21 0>, <&htu21 1>;
+        io-channel-names = "Ambient", "Humidity";
       };
     };
   };
