@@ -1,0 +1,29 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "brcm,bcm2708"; /* probably will soon be bcm2835? */
+
+  fragment@0 {
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
+    __overlay__ {
+      #address-cells = <1>; /* 1 for i2c devices */
+      #size-cells = <0>;    /* 0 for i2c devices */
+      status = "okay";
+
+      /* Use in-tree HWMON driver instead of 3rd-party IIO, JEDEC JC-42 compatible, 0x18 - 0x1f */
+      mcp9808: mcp9808@18 {
+        /* i2c */
+        compatible = "jedec,jc-42.4-temp";
+        reg = <0x18>;
+        status = "okay";
+
+        /* hwmon */
+        /* (NONE) */
+
+        /* hwmon/jc42 special config */
+        /* (NONE) */
+      };
+    };
+  };
+};
