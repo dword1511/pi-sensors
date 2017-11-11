@@ -34,6 +34,7 @@ struct iio_hwmon_state {
 	struct attribute_group attr_group;
 	const struct attribute_group *groups[2];
 	struct attribute **attrs;
+	int *attr_indices;
 };
 
 /*
@@ -66,28 +67,29 @@ static ssize_t iio_hwmon_read_label(struct device *dev,
 	struct iio_hwmon_state *state = dev_get_drvdata(dev);
 	const char *name = state->channels[sattr->index].channel->extend_name;
 	const int is_raw = BIT(IIO_CHAN_INFO_RAW) & state->channels[sattr->index].channel->info_mask_separate;
+	const int name_index = state->attr_indices[sattr->index];
 
 	if (name == NULL) {
 		switch (state->channels[sattr->index].channel->type) {
 		/* NOTE: skipping SI unit for well-defined hwmon type */
 		case IIO_VOLTAGE:
-			return sprintf(buf, "Voltage %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
+			return sprintf(buf, "Voltage %d%s\n", name_index, is_raw ? " RAW" : "");
 		case IIO_TEMP:
-			return sprintf(buf, "Temperature %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
+			return sprintf(buf, "Temperature %d%s\n", name_index, is_raw ? " RAW" : "");
 		case IIO_CURRENT:
-			return sprintf(buf, "Current %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
+			return sprintf(buf, "Current %d%s\n", name_index, is_raw ? " RAW" : "");
 		case IIO_HUMIDITYRELATIVE:
-			return sprintf(buf, "Humidity %d%s\n", sattr->index + 1, is_raw ? " RAW" : "");
+			return sprintf(buf, "Humidity %d%s\n", name_index, is_raw ? " RAW" : "");
 		case IIO_PRESSURE:
-			return sprintf(buf, "Pressure %d %s\n", sattr->index + 1, is_raw ? "RAW" : "kPa");
+			return sprintf(buf, "Pressure %d %s\n", name_index, is_raw ? "RAW" : "kPa");
 		case IIO_LIGHT:
-			return sprintf(buf, "Light %d %s\n", sattr->index + 1, is_raw ? "RAW" : "kLx");
+			return sprintf(buf, "Light %d %s\n", name_index, is_raw ? "RAW" : "kLx");
 		case IIO_INTENSITY:
-			return sprintf(buf, "Intensity %d\n", sattr->index + 1); /* Most likely RAW, for color sensors? */
+			return sprintf(buf, "Intensity %d\n", name_index); /* Most likely RAW, for color sensors? */
 		case IIO_MAGN:
-			return sprintf(buf, "Magnetic flux %d %s\n", sattr->index + 1, is_raw ? "RAW" : "mT");
+			return sprintf(buf, "Magnetic flux %d %s\n", name_index, is_raw ? "RAW" : "mT");
 		default:
-			return sprintf(buf, "Channel %d %s\n", sattr->index + 1, is_raw ? "RAW" : "SI");
+			return sprintf(buf, "Channel %d %s\n", name_index, is_raw ? "RAW" : "SI");
 		}
 	}
 
@@ -136,6 +138,12 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 		goto error_release_channels;
 	}
 
+	st->attr_indices = devm_kzalloc(dev, sizeof(*st->attr_indices) * st->num_channels, GFP_KERNEL);
+	if (st->attr_indices == NULL) {
+		ret = -ENOMEM;
+		goto error_release_channels;
+	}
+
 	for (i = 0; i < st->num_channels; i++) {
 		a = devm_kzalloc(dev, sizeof(*a), GFP_KERNEL);
 		l = devm_kzalloc(dev, sizeof(*l), GFP_KERNEL);
@@ -151,6 +159,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 
 		switch (type) {
 		case IIO_VOLTAGE:
+			st->attr_indices[i] = in_i;
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "in%d_input",
 							       in_i);
@@ -159,6 +168,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 							       in_i++);
 			break;
 		case IIO_TEMP:
+			st->attr_indices[i] = temp_i;
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "temp%d_input",
 							       temp_i);
@@ -167,6 +177,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 							       temp_i++);
 			break;
 		case IIO_CURRENT:
+			st->attr_indices[i] = curr_i;
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "curr%d_input",
 							       curr_i);
@@ -175,6 +186,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 							       curr_i++);
 			break;
 		case IIO_HUMIDITYRELATIVE:
+			st->attr_indices[i] = humidity_i;
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "humidity%d_input",
 							       humidity_i);
@@ -186,6 +198,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 		case IIO_LIGHT:
 		case IIO_INTENSITY:
 		case IIO_MAGN:
+			st->attr_indices[i] = in_i;
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "in%d_input",
 							       in_i);
