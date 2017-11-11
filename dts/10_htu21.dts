@@ -28,11 +28,10 @@
 
   /* iio-hwmon bridge (modified version) */
   /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
-  /* Number after dot in the node name will be translated to hex ISA bus address by lm-sensors. First byte is I2C number, second byte is I2C address. */
   fragment@1 {
     target-path = "/";
     __overlay__ {
-      iio-hwmon-htu21.320 {
+      iio-hwmon-htu21 {
         compatible = "iio-hwmon";
         io-channels = <&htu21 0>, <&htu21 1>;
         io-channel-names = "Ambient", "Humidity";
