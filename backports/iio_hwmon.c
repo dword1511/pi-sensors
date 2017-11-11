@@ -15,6 +15,7 @@
 #include <linux/hwmon.h>
 #include <linux/of.h>
 #include <linux/hwmon-sysfs.h>
+#include <linux/iio/iio.h>
 #include <linux/iio/consumer.h>
 #include <linux/iio/types.h>
 
@@ -57,11 +58,21 @@ static ssize_t iio_hwmon_read_val(struct device *dev,
 	return sprintf(buf, "%d\n", result);
 }
 
+static ssize_t iio_hwmon_read_label(struct device *dev,
+				  struct device_attribute *attr,
+				  char *buf)
+{
+	struct sensor_device_attribute *sattr = to_sensor_dev_attr(attr);
+	struct iio_hwmon_state *state = dev_get_drvdata(dev);
+
+	return sprintf(buf, "%s\n", state->channels[sattr->index].channel->extend_name);
+}
+
 static int iio_hwmon_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct iio_hwmon_state *st;
-	struct sensor_device_attribute *a;
+	struct sensor_device_attribute *a, *l;
 	int ret, i;
 	int in_i = 1, temp_i = 1, curr_i = 1, humidity_i = 1;
 	enum iio_chan_type type;
@@ -92,7 +103,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 		st->num_channels++;
 
 	st->attrs = devm_kzalloc(dev,
-				 sizeof(*st->attrs) * (st->num_channels + 1),
+				 sizeof(*st->attrs) * (st->num_channels * 2 + 1),
 				 GFP_KERNEL);
 	if (st->attrs == NULL) {
 		ret = -ENOMEM;
@@ -101,7 +112,8 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 
 	for (i = 0; i < st->num_channels; i++) {
 		a = devm_kzalloc(dev, sizeof(*a), GFP_KERNEL);
-		if (a == NULL) {
+		l = devm_kzalloc(dev, sizeof(*l), GFP_KERNEL);
+		if (a == NULL || l == NULL) {
 			ret = -ENOMEM;
 			goto error_release_channels;
 		}
@@ -115,41 +127,44 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 		case IIO_VOLTAGE:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "in%d_input",
+							       in_i);
+			l->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+							       "in%d_label",
 							       in_i++);
 			break;
 		case IIO_TEMP:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "temp%d_input",
+							       temp_i);
+			l->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+							       "temp%d_label",
 							       temp_i++);
 			break;
 		case IIO_CURRENT:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "curr%d_input",
+							       curr_i);
+			l->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+							       "curr%d_label",
 							       curr_i++);
 			break;
 		case IIO_HUMIDITYRELATIVE:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "humidity%d_input",
+							       humidity_i);
+			l->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+							       "humidity%d_label",
 							       humidity_i++);
 			break;
 		case IIO_PRESSURE:
-			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "in%d_input",
-							       in_i++);
-			break;
 		case IIO_LIGHT:
-			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "in%d_input",
-							       in_i++);
-			break;
 		case IIO_INTENSITY:
-			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-							       "in%d_input",
-							       in_i++);
-			break;
 		case IIO_MAGN:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "in%d_input",
+							       in_i++);
+			l->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+							       "in%d_label",
 							       in_i++);
 			break;
 		default:
@@ -163,7 +178,11 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 		a->dev_attr.show = iio_hwmon_read_val;
 		a->dev_attr.attr.mode = S_IRUGO;
 		a->index = i;
-		st->attrs[i] = &a->dev_attr.attr;
+		l->dev_attr.show = iio_hwmon_read_label;
+		l->dev_attr.attr.mode = S_IRUGO;
+		l->index = i;
+		st->attrs[i * 2] = &a->dev_attr.attr;
+		st->attrs[i * 2 + 1] = &l->dev_attr.attr;
 	}
 
 	st->attr_group.attrs = st->attrs;
