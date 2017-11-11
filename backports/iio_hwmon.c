@@ -78,6 +78,14 @@ static ssize_t iio_hwmon_read_label(struct device *dev,
 	const int name_index = state->attr_indices[sattr->index];
 
 	if (name == NULL) {
+		name = state->channels[sattr->index].channel->extend_name;
+	}
+
+	if (name == NULL) {
+		name = state->channels[sattr->index].channel->datasheet_name;
+	}
+
+	if (name == NULL) {
 		switch (state->channels[sattr->index].channel->type) {
 		/* NOTE: skipping SI unit for well-defined hwmon type */
 		case IIO_VOLTAGE:
