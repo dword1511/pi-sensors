@@ -11,16 +11,16 @@
       #size-cells = <0>;    /* 0 for i2c devices */
       status = "okay";
 
-      htu21: htu21@40 {
+      tmp007: tmp007@44 {
         /* i2c */
-        compatible = "htu21"; /* NOTE: will become "meas,htu21" in newer kernels */
-        reg = <0x40>;
+        compatible = "ti,tmp007"; /* NOTE: in backports. This driver gives RAW values only. */
+        reg = <0x44>; /* NOTE: pull any AD line up, or there will be a conflict with HTU21D! Pulling AD1 up gets you 0x44. */
         status = "okay";
 
         /* iio */
         #io-channel-cells = <1>; /* 1 for multiple channels */
 
-        /* iio/humidity/htu21 special config */
+        /* iio/magnetometer/tmp007 special config */
         /* (NONE) */
       };
     };
@@ -32,10 +32,10 @@
   fragment@1 {
     target-path = "/";
     __overlay__ {
-      iio-hwmon-htu21.320 {
+      iio-hwmon-tmp007.324 {
         compatible = "iio-hwmon";
-        io-channels = <&htu21 0>, <&htu21 1>;
-        io-channel-names = "Ambient", "Humidity";
+        io-channels = <&tmp007 0>, <&tmp007 1>;
+        io-channel-names = "Ambient", "Object";
       };
     };
   };
