@@ -59,13 +59,21 @@ static ssize_t iio_hwmon_read_val(struct device *dev,
 	return sprintf(buf, "%d\n", result);
 }
 
+/* NOTE: currently does not walk up tree. Should be unnecessary. */
+static const char *iio_hwmon_of_name(struct device_node *np, int index)
+{
+	const char *s = NULL;
+	of_property_read_string_index(np, "io-channel-names", index, &s);
+	return s;
+}
+
 static ssize_t iio_hwmon_read_label(struct device *dev,
 				  struct device_attribute *attr,
 				  char *buf)
 {
 	struct sensor_device_attribute *sattr = to_sensor_dev_attr(attr);
 	struct iio_hwmon_state *state = dev_get_drvdata(dev);
-	const char *name = state->channels[sattr->index].channel->extend_name;
+	const char *name = iio_hwmon_of_name(dev->of_node, sattr->index);
 	const int is_raw = BIT(IIO_CHAN_INFO_RAW) & state->channels[sattr->index].channel->info_mask_separate;
 	const int name_index = state->attr_indices[sattr->index];
 
