@@ -30,7 +30,7 @@
   /* NOTE: in-tree but not compiled */
   /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
   fragment@1 {
-    target = <&soc>;
+    target-path = "/";
     __overlay__ {
       iio-hwmon-htu21 {
         compatible = "iio-hwmon";
