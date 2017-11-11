@@ -64,8 +64,33 @@ static ssize_t iio_hwmon_read_label(struct device *dev,
 {
 	struct sensor_device_attribute *sattr = to_sensor_dev_attr(attr);
 	struct iio_hwmon_state *state = dev_get_drvdata(dev);
+	const char *name = state->channels[sattr->index].channel->extend_name;
+	const int is_raw = BIT(IIO_CHAN_INFO_RAW) & state->channels[sattr->index].channel->info_mask_separate;
 
-	return sprintf(buf, "%s\n", state->channels[sattr->index].channel->extend_name);
+	if (name == NULL) {
+		switch (state->channels[sattr->index].channel->type) {
+		case IIO_VOLTAGE:
+			return sprintf(buf, "Voltage %d\n", sattr->index + 1);
+		case IIO_TEMP:
+			return sprintf(buf, "Temperature %d\n", sattr->index + 1);
+		case IIO_CURRENT:
+			return sprintf(buf, "Current %d\n", sattr->index + 1);
+		case IIO_HUMIDITYRELATIVE:
+			return sprintf(buf, "Humidity %d\n", sattr->index + 1);
+		case IIO_PRESSURE:
+			return sprintf(buf, "Pressure %d%s\n", sattr->index + 1, is_raw ? "RAW" : "kPa");
+		case IIO_LIGHT:
+			return sprintf(buf, "Light %d%s\n", sattr->index + 1, is_raw ? "RAW" : "kLx");
+		case IIO_INTENSITY:
+			return sprintf(buf, "Intensity %d\n", sattr->index + 1); /* Most likely RAW, for color sensors? */
+		case IIO_MAGN:
+			return sprintf(buf, "Magnetic flux %d%s\n", sattr->index + 1, is_raw ? "RAW" : "mT");
+		default:
+			return sprintf(buf, "Channel %d%s\n", sattr->index + 1, is_raw ? "RAW" : "SI");
+		}
+	}
+
+	return sprintf(buf, "%s\n", name);
 }
 
 static int iio_hwmon_probe(struct platform_device *pdev)
@@ -162,7 +187,7 @@ static int iio_hwmon_probe(struct platform_device *pdev)
 		case IIO_MAGN:
 			a->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "in%d_input",
-							       in_i++);
+							       in_i);
 			l->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
 							       "in%d_label",
 							       in_i++);
