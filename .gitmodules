@@ -1,6 +1,6 @@
 [submodule "mcp9808"]
-	path = mcp9808_chardev
+	path = kmod/mcp9808_chardev
 	url = https://github.com/savoca/mcp9808.git
 [submodule "bmp085"]
-	path = bmp085_probe
+	path = kmod/bmp085_probe
 	url = https://github.com/bsapundzhiev/bmp085.git
