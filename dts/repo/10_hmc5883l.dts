@@ -1,0 +1,41 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "brcm,bcm2708"; /* probably will soon be bcm2835? */
+
+  fragment@0 {
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
+    __overlay__ {
+      #address-cells = <1>; /* 1 for i2c devices */
+      #size-cells = <0>;    /* 0 for i2c devices */
+      status = "okay";
+
+      hmc5883l: hmc5883l@1e {
+        /* i2c */
+        compatible = "honeywell,hmc5883l"; /* NOTE: load hmc5843_i2c. In-tree but not compiled. */
+        reg = <0x1e>;
+        status = "okay";
+
+        /* iio */
+        #io-channel-cells = <1>; /* 1 for multiple channels */
+
+        /* iio/magnetometer/hmc5843 special config */
+        /* (NONE) */
+      };
+    };
+  };
+
+  /* iio-hwmon bridge (modified version) */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
+  fragment@1 {
+    target-path = "/";
+    __overlay__ {
+      iio-hwmon-hmc5883l {
+        compatible = "iio-hwmon";
+        io-channels = <&hmc5883l 0>, <&hmc5883l 1>, <&hmc5883l 2>;
+        io-channel-names = "X", "Y", "Z";
+      };
+    };
+  };
+};
