@@ -1,0 +1,13 @@
+# Select and add the following to /etc/modules, so they can load automatically after boot:
+
+i2c-bcm2835
+i2c-dev
+
+tmp007
+bmp280_i2c
+tsl2591
+hmc5843_i2c
+jc42
+htu21
+
+iio_hwmon
