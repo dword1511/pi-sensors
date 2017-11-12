@@ -1,9 +1,13 @@
 How to Use
 ==========
 
-1. Copy or symlink desired **dts** file from **repo/**.
-2. Type `make` to build.
-3. Type `sudo make load` to apply.
+1. Type `make enable_some.dts` to enable desired DTS.
+   Use bash completion.
+   Browse **./repo** for available DTS.
+   Do not forget to include `00_i2c1.dts` for I2C sensors.
+1. Type `make` to build.
+1. Type `sudo make load` to apply.
+1. Do not forget to build and load kernel drivers in **../kmod**.
 
 Notes & Lessons
 ===============
