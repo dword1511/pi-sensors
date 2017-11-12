@@ -29,7 +29,7 @@
   /* iio-hwmon bridge (modified version) */
   /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
   fragment@1 {
-    target-path = "/";
+    target = <&htu21>;
     __overlay__ {
       iio-hwmon-htu21 {
         compatible = "iio-hwmon";
