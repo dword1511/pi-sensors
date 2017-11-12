@@ -34,7 +34,7 @@
       iio-hwmon-tsl2591 {
         compatible = "iio-hwmon";
         io-channels = <&tsl2591 0>, <&tsl2591 1>;
-        io-channel-names = "Clear", "IR";
+        io-channel-names = "Both", "IR";
       };
     };
   };

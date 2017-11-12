@@ -338,7 +338,7 @@ static int tsl2591_probe(struct i2c_client *client,
 	tsl2591 = iio_priv(indio_dev);
 	tsl2591->i2c = client;
 	tsl2591->int_time = 100;
-	tsl2591->gain = 0;
+	tsl2591->gain = 1;
 	i2c_set_clientdata(client, indio_dev);
 
 	indio_dev->dev.parent = &client->dev;

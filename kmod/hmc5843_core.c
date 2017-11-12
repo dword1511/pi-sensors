@@ -334,7 +334,7 @@ static ssize_t hmc5843_show_scale_avail(struct device *dev,
 
 	for (i = 0; i < data->variant->n_regval_to_nanoscale; i++)
 		len += scnprintf(buf + len, PAGE_SIZE - len,
-			"0.%09d ", data->variant->regval_to_nanoscale[i]);
+			"%9d ", data->variant->regval_to_nanoscale[i]);
 
 	/* replace trailing space by newline */
 	buf[len - 1] = '\n';
@@ -375,8 +375,8 @@ static int hmc5843_read_raw(struct iio_dev *indio_dev,
 		if (ret < 0)
 			return ret;
 		rval >>= HMC5843_RANGE_GAIN_OFFSET;
-		*val = 0;
-		*val2 = data->variant->regval_to_nanoscale[rval];
+		*val = data->variant->regval_to_nanoscale[rval];
+		*val2 = 0;
 		return IIO_VAL_INT_PLUS_NANO;
 	case IIO_CHAN_INFO_SAMP_FREQ:
 		ret = regmap_read(data->regmap, HMC5843_CONFIG_REG_A, &rval);

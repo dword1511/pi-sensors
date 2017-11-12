@@ -53,8 +53,14 @@ static ssize_t iio_hwmon_read_val(struct device *dev,
 
 	ret = iio_read_channel_processed(&state->channels[sattr->index],
 					&result);
-	if (ret < 0)
+	if (ret < 0) {
+		pr_info("iio_read_channel_processed() failed with ret = %d\n", ret);
+		ret = iio_read_channel_raw(&state->channels[sattr->index], &result);
+	}
+	if (ret < 0) {
+		pr_err("iio_read_channel_raw() failed with ret = %d\n", ret);
 		return ret;
+	}
 
 	return sprintf(buf, "%d\n", result);
 }
@@ -88,6 +94,7 @@ static ssize_t iio_hwmon_read_label(struct device *dev,
 	if (name == NULL) {
 		switch (state->channels[sattr->index].channel->type) {
 		/* NOTE: skipping SI unit for well-defined hwmon type */
+        /* NOTE: although channels can be raw, they can also have processed versions! */
 		case IIO_VOLTAGE:
 			return sprintf(buf, "Voltage %d%s\n", name_index, is_raw ? " RAW" : "");
 		case IIO_TEMP:
