@@ -31,7 +31,7 @@
   /* iio-hwmon bridge (modified version) */
   /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
   fragment@1 {
-    target = <&bmp180>;
+    target-path = "/";
     __overlay__ {
       iio-hwmon-bmp180 {
         compatible = "iio-hwmon";
