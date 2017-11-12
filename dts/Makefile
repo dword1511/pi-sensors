@@ -19,6 +19,7 @@ clean:
 	rm -f $(DTBO)
 
 distclean: clean disable_all
+	rm -f *.dtbo
 
 $(DUMPS):
 	@$(MAKE) $(@:dump_%=%).dtbo
@@ -28,7 +29,7 @@ load: $(DTBO)
 	@echo "Checking / mounting configfs"
 	@mount | grep configfs || mount -t configfs none /sys/kernel/config
 	@for n in $(NAME); do \
-	  echo $$n;
+	  echo $$n; \
 	  mkdir -p /sys/kernel/config/device-tree/overlays/$$n; \
 	  cp $$n.dtbo /sys/kernel/config/device-tree/overlays/$$n/dtbo; \
 	done
@@ -37,7 +38,7 @@ unload:
 	@echo "WARNING: more likely than not this will not work!"
 	@echo "         The patch for dynamic unloading via configfs has not been merged as of kernel v4.9."
 	@for n in $(NAME); do \
-	  echo $$n;
+	  echo $$n; \
 	  rmdir /sys/kernel/config/device-tree/overlays/$$n; \
 	done
 
