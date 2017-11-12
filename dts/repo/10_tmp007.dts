@@ -22,14 +22,19 @@
 
         /* iio/magnetometer/tmp007 special config */
         /* (NONE) */
+      };
+    };
+  };
 
-        /* iio-hwmon bridge (modified version) */
-        /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
-        iio-hwmon-tmp007 {
-          compatible = "iio-hwmon";
-          io-channels = <&tmp007 0>, <&tmp007 1>;
-          io-channel-names = "Ambient", "Object";
-        };
+  /* iio-hwmon bridge (modified version) */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
+  fragment@1 {
+    target = <&tmp007>;
+    __overlay__ {
+      iio-hwmon-tmp007 {
+        compatible = "iio-hwmon";
+        io-channels = <&tmp007 0>, <&tmp007 1>;
+        io-channel-names = "Ambient", "Object";
       };
     };
   };

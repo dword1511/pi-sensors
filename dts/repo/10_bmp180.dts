@@ -24,14 +24,19 @@
         temp-measurement-period = <500>;
         default-oversampling = <3>; /* NOTE: needs verification, documentation might be out-dated */
         /* TODO: should disable IRQ (only BMP085 has this but it has the same ID as BMP180.) */
+      };
+    };
+  };
 
-        /* iio-hwmon bridge (modified version) */
-        /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
-        iio-hwmon-bmp180 {
-          compatible = "iio-hwmon";
-          io-channels = <&bmp180 0>, <&bmp180 1>;
-          io-channel-names = "Pressure kPa", "Ambient";
-        };
+  /* iio-hwmon bridge (modified version) */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
+  fragment@1 {
+    target = <&bmp180>;
+    __overlay__ {
+      iio-hwmon-bmp180 {
+        compatible = "iio-hwmon";
+        io-channels = <&bmp180 0>, <&bmp180 1>;
+        io-channel-names = "Pressure kPa", "Ambient";
       };
     };
   };

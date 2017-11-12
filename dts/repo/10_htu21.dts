@@ -22,14 +22,19 @@
 
         /* iio/humidity/htu21 special config */
         /* (NONE) */
+      };
+    };
+  };
 
-        /* iio-hwmon bridge (modified version) */
-        /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
-        iio-hwmon-htu21 {
-          compatible = "iio-hwmon";
-          io-channels = <&htu21 0>, <&htu21 1>;
-          io-channel-names = "Ambient", "Humidity";
-        };
+  /* iio-hwmon bridge (modified version) */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
+  fragment@1 {
+    target = <&htu21>;
+    __overlay__ {
+      iio-hwmon-htu21 {
+        compatible = "iio-hwmon";
+        io-channels = <&htu21 0>, <&htu21 1>;
+        io-channel-names = "Ambient", "Humidity";
       };
     };
   };
