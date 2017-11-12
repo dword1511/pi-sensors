@@ -34,7 +34,7 @@
       iio-hwmon-hmc5883l {
         compatible = "iio-hwmon";
         io-channels = <&hmc5883l 0>, <&hmc5883l 1>, <&hmc5883l 2>;
-        io-channel-names = "X", "Y", "Z";
+        io-channel-names = "X uT", "Y uT", "Z uT";
       };
     };
   };

@@ -375,8 +375,8 @@ static int hmc5843_read_raw(struct iio_dev *indio_dev,
 		if (ret < 0)
 			return ret;
 		rval >>= HMC5843_RANGE_GAIN_OFFSET;
-		*val = data->variant->regval_to_nanoscale[rval] / 1000;
-		*val2 = data->variant->regval_to_nanoscale[rval] % 1000;
+		*val = data->variant->regval_to_nanoscale[rval] / 100;
+		*val2 = data->variant->regval_to_nanoscale[rval] % 100 * 10000;
 		return IIO_VAL_INT_PLUS_NANO;
 	case IIO_CHAN_INFO_SAMP_FREQ:
 		ret = regmap_read(data->regmap, HMC5843_CONFIG_REG_A, &rval);

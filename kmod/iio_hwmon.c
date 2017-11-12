@@ -53,12 +53,10 @@ static ssize_t iio_hwmon_read_val(struct device *dev,
 
 	ret = iio_read_channel_processed(&state->channels[sattr->index],
 					&result);
-	if (ret < 0) {
-		pr_info("iio_read_channel_processed() failed with ret = %d\n", ret);
+	if (ret < 0)
 		ret = iio_read_channel_raw(&state->channels[sattr->index], &result);
-	}
 	if (ret < 0) {
-		pr_err("iio_read_channel_raw() failed with ret = %d\n", ret);
+		pr_err("iio_hwmon: both iio_read_channel_processed() and iio_read_channel_raw() failed!\n");
 		return ret;
 	}
 
