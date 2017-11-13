@@ -31,8 +31,8 @@
   fragment@1 {
     target-path = "/";
     __overlay__ {
-      iio-hwmon-tsl2591 {
-        compatible = "iio-hwmon";
+      iio-tsl2591 {
+        compatible = "iio-collectd";
         io-channels = <&tsl2591 0>, <&tsl2591 1>;
         io-channel-names = "Both RAW", "IR RAW";
       };

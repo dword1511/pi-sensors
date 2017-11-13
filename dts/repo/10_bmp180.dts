@@ -33,8 +33,8 @@
   fragment@1 {
     target-path = "/";
     __overlay__ {
-      iio-hwmon-bmp180 {
-        compatible = "iio-hwmon";
+      iio-bmp180 {
+        compatible = "iio-collectd";
         io-channels = <&bmp180 0>, <&bmp180 1>;
         io-channel-names = "Pressure kPa", "Ambient";
       };

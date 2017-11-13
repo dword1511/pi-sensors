@@ -31,8 +31,8 @@
   fragment@1 {
     target-path = "/";
     __overlay__ {
-      iio-hwmon-hmc5883l {
-        compatible = "iio-hwmon";
+      iio-hmc5883l {
+        compatible = "iio-collectd";
         io-channels = <&hmc5883l 0>, <&hmc5883l 1>, <&hmc5883l 2>;
         io-channel-names = "X uT", "Y uT", "Z uT";
       };
