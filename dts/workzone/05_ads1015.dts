@@ -1,0 +1,52 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "brcm,bcm2708"; /* probably will soon be bcm2835? */
+
+  fragment@0 {
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
+    __overlay__ {
+      #address-cells = <1>; /* 1 for i2c devices */
+      #size-cells = <0>;    /* 0 for i2c devices */
+      status = "okay";
+
+      /* Use in-tree HWMON driver, may become IIO in the future */
+      ads1015: ads1015@49 {
+        /* i2c */
+        compatible = "ti,ads1015";
+        reg = <0x49>;
+        status = "okay";
+
+        /* hwmon */
+        /* (NONE) */
+
+        /* hwmon/ads1015 special config */
+        /* See: https://www.kernel.org/doc/Documentation/devicetree/bindings/hwmon/ads1015.txt */
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        channel@4 {
+          reg = <4>;
+          ti,gain = <0>;
+          ti,datarate = <0>;
+        };
+        channel@5 {
+          reg = <4>;
+          ti,gain = <0>;
+          ti,datarate = <0>;
+        };
+        channel@6 {
+          reg = <4>;
+          ti,gain = <0>;
+          ti,datarate = <0>;
+        };
+        channel@7 {
+          reg = <4>;
+          ti,gain = <0>;
+          ti,datarate = <0>;
+        };
+      };
+    };
+  };
+};

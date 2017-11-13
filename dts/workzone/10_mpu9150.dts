@@ -1,0 +1,66 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "brcm,bcm2708"; /* probably will soon be bcm2835? */
+
+  fragment@0 {
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
+    __overlay__ {
+      #address-cells = <1>; /* 1 for i2c devices */
+      #size-cells = <0>;    /* 0 for i2c devices */
+      status = "okay";
+
+      mpu9150@68 {
+        /* i2c */
+        compatible = "invensense,mpu9150";
+        reg = <0x68>;
+        status = "okay";
+
+        /* iio */
+        #io-channel-cells = <1>; /* 1 for multiple channels */
+
+        /* iio/imu/mpu6050 special config */
+        /* See: https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/imu/inv_mpu6050.txt */
+        i2c-gate {
+          #address-cells = <1>; /* 1 for i2c devices */
+          #size-cells = <0>;    /* 0 for i2c devices */
+          status = "okay";
+
+          mpu9150_ak8975: ak8975@0c {
+            /* i2c */
+            compatible = "asahi-kasei,ak8975";
+            reg = <0x0c>;
+            status = "okay";
+
+            /* iio */
+            #io-channel-cells = <1>; /* 1 for multiple channels */
+
+            /* iio/magnetometer/ak8975 special config */
+            /* See: https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt */
+          };
+        };
+      };
+    };
+  };
+
+  /* iio-hwmon bridge (modified version) */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
+  fragment@1 {
+    target-path = "/";
+    __overlay__ {
+      iio-mpu9150 {
+        compatible = "iio-collectd";
+        /* Channel 0 is timestamp, 1 is package temperature. */
+        io-channels = <&mpu9150 1>,
+                      <&mpu9150 2>, <&mpu9150 3>, <&mpu9150 4>,
+                      <&mpu9150 5>, <&mpu9150 6>, <&mpu9150 7>,
+                      <&mpu9150_ak8975 0>, <&mpu9150_ak8975 1>, <&mpu9150_ak8975 2>;
+        io-channel-names =  "Package",
+                            "Gyro X deg/s", "Gyro Y deg/s", "Gyro Z deg/s",
+                            "Accel X m/s2", "Accel Y m/s2", "Accel Z m/s2",
+                            "Mag X uT", "Mag Y uT", "Mag Z uT";
+      };
+    };
+  };
+};

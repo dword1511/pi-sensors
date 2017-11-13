@@ -3,11 +3,16 @@
 i2c-bcm2835
 i2c-dev
 
-tmp007
+ak8975
+bh1750
 bmp280_i2c
-tsl2591
 hmc5843_i2c
-jc42
 htu21
+inv-mpu6050-i2c
+jc42
+mlx90614
+tmp007
+tsl2591
+vl6180
 
 iio_collectd

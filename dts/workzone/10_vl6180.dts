@@ -1,0 +1,41 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "brcm,bcm2708"; /* probably will soon be bcm2835? */
+
+  fragment@0 {
+    target = <&i2c1>; /* NOTE: cannot use i2c_arm here! */
+    __overlay__ {
+      #address-cells = <1>; /* 1 for i2c devices */
+      #size-cells = <0>;    /* 0 for i2c devices */
+      status = "okay";
+
+      vl6180: vl6180@29 {
+        /* i2c */
+        compatible = "st,vl6180";
+        reg = <0x29>;
+        status = "okay";
+
+        /* iio */
+        #io-channel-cells = <1>; /* 1 for multiple channels */
+
+        /* iio/light/vl6180 special config */
+        /* (NONE) */
+      };
+    };
+  };
+
+  /* iio-hwmon bridge (modified version) */
+  /* This mirrors iio channels to hwmon, which can be hooked to collectd. */
+  fragment@1 {
+    target-path = "/";
+    __overlay__ {
+      iio-vl6180 {
+        compatible = "iio-collectd";
+        io-channels = <&vl6180 0> <&vl6180 1> <&vl6180 2>;
+        io-channel-names = "Ambient lx", "Distance m", "Proximity";
+      };
+    };
+  };
+};
