@@ -10,4 +10,4 @@ hmc5843_i2c
 jc42
 htu21
 
-iio_hwmon
+iio_collectd
