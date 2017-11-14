@@ -3,7 +3,7 @@
 KSRC    = /lib/modules/$(shell uname -r)/build/
 KMODDIR = /lib/modules/$(shell uname -r)/misc/
 
-KMODS   = bh1750 ak8975 hmc5843_core hmc5843_i2c hmc5843_spi mlx90614 tmp007 tsl2591 vl6180 iio_collectd
+KMODS   = ak8975 bcm2835-hwmon bh1750 hmc5843_core hmc5843_i2c hmc5843_spi mlx90614 tmp007 tsl2591 vl6180 iio_collectd iio_hwmon
 
 KMODSRC = $(KMODS:=.c)
 KOS     = $(KMODS:=.ko)
