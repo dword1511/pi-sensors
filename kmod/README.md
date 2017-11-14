@@ -12,6 +12,8 @@ The `mcp2221` driver is from Microchip
 [Download](http://ww1.microchip.com/downloads/en/DeviceDoc/mcp2221_0_1.tar.gz)),
 and supports a handy USB-to-I2C bridge for debugging.
 
+`collectd` currently has no industrial IO support.
+
 
 
 `ads1015`
@@ -76,6 +78,8 @@ Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 The `hmc5843` driver is in-tree and supports Honeywell's magneto-resistive magnetometers.
 The most famous is probably the `HMC5883L`, which is easily accessible on Amazon,
 and is much more sensitive / noise-free than its Hall-effect-based counterparts.
+Other supported parts include, of course, `HMC5843`, and `HMC5983`.
+
 The `hmc5843_core` part has been modified so the micro-Tesla output fits `hwmon`'s voltage,
 which is a twisted way to make it work with `collectd`.
 
@@ -84,6 +88,8 @@ which is a twisted way to make it work with `collectd`.
 Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
 
 Version: `2d6349944d967129c1da3c47287376f10121dbe1`
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/magnetometer/hmc5843.txt)
 
 
 `jc42`
@@ -103,6 +109,23 @@ Manual probing by writing to `/sys/bus/i2c/devices/i2c-1/new_device` works perfe
 **Test is in progress.**
 
 [Documentation and supported devices](https://www.kernel.org/doc/Documentation/devicetree/bindings/hwmon/jc42.txt)
+
+
+`tsl2591`
+---------
+The `tsl2591` is an out-of-tree driver for AMS's `TSL2591` IR and visible ambient light sensor.
+No documentation is available.
+
+The default sensitivity has been modified from `0` to `1` as I found it much more suitable for indoor use.
+However, if you are leaving the sensor in some place dark or with direct sun-light,
+consider changing this value, or configure it dynamically in runtime.
+
+**Tested with DTS on a Pi 2**
+
+Source: git://git.kernel.org/pub/scm/linux/kernel/git/jic23/parrot.git
+
+Version: 362f6b3329cd8e799a298961b934ac4e839f0a7d
+
 
 
 `iio-hwmon`
