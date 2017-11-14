@@ -1,7 +1,0 @@
-The iio-collectd driver is based on in-tree iio-hwmon:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-2d6349944d967129c1da3c47287376f10121dbe1
-
-The main goal is to bridge iio devices to collectd via hwmon.
-So certain compromises have been made.
