@@ -18,7 +18,8 @@ and supports a handy USB-to-I2C bridge for debugging.
 
 `ads1015`
 ---------
-The `ads1015` is an in-tree `hwmon` driver, and is already included in the Raspbian distribution.
+The `ads1015` is an in-tree `hwmon` driver for TI's `ADS1015` 4-channel ADC,
+and is already included in the Raspbian distribution.
 Thus, its code is not included in this repository.
 It is unclear whether later this driver will be ported to the industrial IO section,
 which seems more suitable for a multi-channel ADC with PGA.
@@ -77,7 +78,7 @@ Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 -------------------------------
 The `hmc5843` driver is in-tree and supports Honeywell's magneto-resistive magnetometers.
 The most famous is probably the `HMC5883L`, which is easily accessible on Amazon,
-and is much more sensitive / noise-free than its Hall-effect-based counterparts.
+and is much more sensitive / low-noise than its Hall-effect-based counterparts.
 Other supported parts include, of course, `HMC5843`, and `HMC5983`.
 
 The `hmc5843_core` part has been modified so the micro-Tesla output fits `hwmon`'s voltage,
@@ -117,7 +118,7 @@ The `tsl2591` is an out-of-tree driver for AMS's `TSL2591` IR and visible ambien
 No documentation is available.
 
 The default sensitivity has been modified from `0` to `1` as I found it much more suitable for indoor use.
-However, if you are leaving the sensor in some place dark or with direct sun-light,
+However, if you are leaving the sensor in some place dark or with direct sunlight,
 consider changing this value, or configure it dynamically in runtime.
 
 **Tested with DTS on a Pi 2**
@@ -130,7 +131,7 @@ Version: 362f6b3329cd8e799a298961b934ac4e839f0a7d
 
 `iio-hwmon`
 -----------
-The `iio-hwmon` is a in-tree kernel that mirros industrial IO channels to `hwmon`.
+The `iio-hwmon` is a in-tree kernel that mirrors industrial IO channels to `hwmon`.
 However, since `hwmon` only support a few types of channels
 (voltage, temperature, humidity, fan speed, current, power, energy),
 some channels cannot be mapped with this driver,
@@ -143,8 +144,8 @@ Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 
 `iio-collectd`
 --------------
-The `iio-collectd` driver is based on the in-tree iio-hwmon driver.
-The main goal is to bridge iio devices to collectd via hwmon.
+The `iio-collectd` driver is based on the in-tree `iio-hwmon` driver.
+The main goal is to bridge `iio` devices to `collectd` via `hwmon`.
 So certain compromises have been made, *e.g.* mapping humidity to voltage.
 There are also enhancements such as channel labeling.
 Usage in device tree is similar to `iio-hwmon`,
