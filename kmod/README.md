@@ -13,11 +13,26 @@ The `mcp2221` driver is from Microchip
 and supports a handy USB-to-I2C bridge for debugging.
 
 
-`ak8975`
---------
-The `ak8975` driver provides support for Asahi Kasei's `AK8975` Hall-effect 3-axis magnetometers.
+
+`ads1015`
+---------
+The `ads1015` is an in-tree `hwmon` driver, and is already included in the Raspbian distribution.
+Thus, its code is not included in this repository.
+It is unclear whether later this driver will be ported to the industrial IO section,
+which seems more suitable for a multi-channel ADC with PGA.
+
+**Test is in progress.**
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/hwmon/ads1015.txt)
+
+
+`ak8975` (useful with `MPU-9125`)
+---------------------------------
+The `ak8975` driver is in-tree and provides support for Asahi Kasei's `AK8975` Hall-effect 3-axis magnetometers.
 This electronic compass is found on the auxiliary I2C bus on InvenSense's `MPU-9125` IMU.
 Driver for the IMU itself (`inv-mpu6050-i2c`) is already included in the Raspbian distribution.
+
+**Test is in progress.**
 
 Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
 
@@ -26,6 +41,35 @@ Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 [Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt)
 
 [Documentation for `MPU-9150` and how to enable the auxiliary I2C bus](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/imu/inv_mpu6050.txt)
+
+
+`bcm2835-hwmon`
+---------------
+The `bcm2835-hwmon` is a legacy `hwmon` driver found in Pi's 3.x kernel branch.
+It was replaced by `bcm2835-thermal` driver, which ditches the `hwmon` interface.
+However, from time to time we need a `hwmon` driver for Pi's CPU temperature.
+It is hence included here.
+
+**Test is in progress.**
+
+Source: `https://github.com/raspberrypi/linux/tree/rpi-3.19.y`
+
+Version: 108e489c19d92800dfc7f04ec93f57468ffff751
+
+
+`jc42`
+------
+The `jc42` is an in-tree `hwmon` driver, and is already included in the Raspbian distribution.
+Thus, its code is not included in this repository.
+It provides support for JEDEC JC-42.4 compatible temperature sensors,
+which is a long list of sensors including `MCP9808`.
+On a PC this driver would automatically probe all I2C buses (maybe unsafe, who knows).
+On the Pi it seems to require device tree overlay to function.
+Unfortunately, all my trials ended up with -22 (`EINVAL`) during probing.
+
+**Test is in progress.**
+
+[Documentation and supported devices](https://www.kernel.org/doc/Documentation/devicetree/bindings/hwmon/jc42.txt)
 
 `iio-hwmon`
 -----------
@@ -47,6 +91,7 @@ So certain compromises have been made, *e.g.* mapping humidity to voltage.
 There are also enhancements such as channel labeling.
 Usage in device tree is similar to `iio-hwmon`,
 except that `io-channel-names` can be used to override automatically generated labels.
+
 
 
 Example `/etc/modules` Configuration
@@ -72,6 +117,7 @@ vl6180
 iio_hwmon
 iio_collectd
 ```
+
 
 Example `collectd.conf` Snippet
 -------------------------------
