@@ -57,19 +57,53 @@ Source: `https://github.com/raspberrypi/linux/tree/rpi-3.19.y`
 Version: 108e489c19d92800dfc7f04ec93f57468ffff751
 
 
+`bh1750`
+--------
+The `bh1750` is an in-tree driver for Rohm's unassuming
+`BH1710` / `BH1715` / `BH1721` / `BH1750` / `BH1751` ambient light sensors.
+It has got one single channel and there is not much trick to it.
+Kernel developers do not even border to write documentation for it.
+
+**Test is in progress.**
+
+Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
+
+Version: `2d6349944d967129c1da3c47287376f10121dbe1`
+
+
+`hmc5843_i2c` and `hmc5843_spi`
+-------------------------------
+The `hmc5843` driver is in-tree and supports Honeywell's magneto-resistive magnetometers.
+The most famous is probably the `HMC5883L`, which is easily accessible on Amazon,
+and is much more sensitive / noise-free than its Hall-effect-based counterparts.
+The `hmc5843_core` part has been modified so the micro-Tesla output fits `hwmon`'s voltage,
+which is a twisted way to make it work with `collectd`.
+
+**Tested with DTS on a Pi 2**
+
+Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
+
+Version: `2d6349944d967129c1da3c47287376f10121dbe1`
+
+
 `jc42`
 ------
 The `jc42` is an in-tree `hwmon` driver, and is already included in the Raspbian distribution.
 Thus, its code is not included in this repository.
 It provides support for JEDEC JC-42.4 compatible temperature sensors,
-which is a long list of sensors including `MCP9808`.
-On a PC this driver would automatically probe all I2C buses (maybe unsafe, who knows).
+which is a long list of sensors including Microchip's precision temperature sensor `MCP9808`.
+These sensors are originally intended for monitoring memory modules,
+some of them even have integrated 24xx EEPROMs for SPD data.
+See the documentation for a complete list of supported sensors.
+On a PC this driver would automatically probe all I2C buses (maybe unsafe, who knows), and it works fine.
 On the Pi it seems to require device tree overlay to function.
 Unfortunately, all my trials ended up with -22 (`EINVAL`) during probing.
+Manual probing by writing to `/sys/bus/i2c/devices/i2c-1/new_device` works perfectly, however.
 
 **Test is in progress.**
 
 [Documentation and supported devices](https://www.kernel.org/doc/Documentation/devicetree/bindings/hwmon/jc42.txt)
+
 
 `iio-hwmon`
 -----------
@@ -83,6 +117,7 @@ Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
 
 Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 
+
 `iio-collectd`
 --------------
 The `iio-collectd` driver is based on the in-tree iio-hwmon driver.
@@ -91,6 +126,8 @@ So certain compromises have been made, *e.g.* mapping humidity to voltage.
 There are also enhancements such as channel labeling.
 Usage in device tree is similar to `iio-hwmon`,
 except that `io-channel-names` can be used to override automatically generated labels.
+
+**Please kindly report bugs to this repository.**
 
 
 
