@@ -235,6 +235,8 @@ Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
 
 Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 
+[Documentation for `iio` in general](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/iio-bindings.txt)
+
 
 `iio-collectd`
 --------------
