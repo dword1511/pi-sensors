@@ -74,6 +74,20 @@ Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
 Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 
 
+`bmp280_i2c`
+------------
+The `bmp280_i2c` is the latest in-tree driver for Bosch's `BMP085`, `BMP180`, `BMP280` and `BME280` barometric pressure sensors.
+All of them comes with temperature sensors, but on `BMP085` and `BMP180` the resolution is not so great.
+`BME280` also provides humidity, thus it has 3 channels while all the others have 2.
+The driver automatically detects sensor types.
+It will always throw some error in the kernel log if interrupt pin is undefined, but will then work perfectly.
+It is already included in the Raspbian distribution, so its code is not included in this repository.
+
+**Tested with DTS on a Pi 2.**
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/pressure/bmp085.txt)
+
+
 `hmc5843_i2c` and `hmc5843_spi`
 -------------------------------
 The `hmc5843` driver is in-tree and supports Honeywell's magneto-resistive magnetometers.
@@ -84,13 +98,40 @@ Other supported parts include, of course, `HMC5843`, and `HMC5983`.
 The `hmc5843_core` part has been modified so the micro-Tesla output fits `hwmon`'s voltage,
 which is a twisted way to make it work with `collectd`.
 
-**Tested with DTS on a Pi 2**
+**Tested with DTS on a Pi 2.**
 
 Source: `git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
 
 Version: `2d6349944d967129c1da3c47287376f10121dbe1`
 
 [Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/magnetometer/hmc5843.txt)
+
+
+`htu21`
+-------
+The `htu21` is an in-tree driver, and is already included in the Raspbian distribution.
+Thus, its code is not included in this repository.
+It supports Measurement Specialist's `HTU21D` temperature and humidity sensor.
+Resolution is decent.
+
+**Tested with DTS on a Pi 2.**
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/humidity/htu21.txt)
+
+
+`inv-mpu6050-i2c`
+-----------------
+The `inv-mpu6050` is an in-tree driver, and is already included in the Raspbian distribution.
+Thus, its code is not included in this repository.
+It supports InvenSense's `MPU6050`, `MPU6500`, `MPU9150`, `MPU9250` and `ICM20608` IMU,
+with built-in 3-axis accelerometers and gyroscopes.
+These sensors sometimes have a secondary I2C bus connecting to an internal compass.
+Please see the datasheet for what is included,
+and the corresponding compass driver's documentation for setting the compass up.
+
+**Test is in progress.**
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/imu/inv_mpu6050.txt)
 
 
 `jc42`
@@ -107,9 +148,46 @@ On the Pi it seems to require device tree overlay to function.
 Unfortunately, all my trials ended up with -22 (`EINVAL`) during probing.
 Manual probing by writing to `/sys/bus/i2c/devices/i2c-1/new_device` works perfectly, however.
 
-**Test is in progress.**
+**Tested with manual probing on a Pi 2. Test with DTS is in progress.**
 
 [Documentation and supported devices](https://www.kernel.org/doc/Documentation/devicetree/bindings/hwmon/jc42.txt)
+
+
+`mlx90614`
+----------
+The `mlx90614` is an in-tree driver supporting Melexis' `MLX90614` contactless temperature sensor.
+This sensor has single zone and dual zone variants,
+the driver supports both of them and can automatically detect them.
+All variants also measures local temperature as most remote temperature sensors do.
+However, when it comes to device tree you need to be careful,
+since the number of channels is different.
+
+**Test is in progress.**
+
+Source: git://git.kernel.org/pub/scm/linux/kernel/git/jic23/parrot.git
+
+Version: 362f6b3329cd8e799a298961b934ac4e839f0a7d
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/temperature/mlx90614.txt)
+
+
+`tmp007`
+--------
+The `tmp007` is an in-tree driver, and is already included in the Raspbian distribution.
+Thus, its code is not included in this repository.
+It measures both local and remote temperatures as most remote temperature sensors do.
+Remote temperature measurement can get significant interference (~2 Celsius)
+when local temperature changes rapidly due to airflow.
+So relatively stable environment is recommended.
+You may shroud the sensor but be aware of its FoV.
+
+**Tested with DTS on a Pi 2.**
+
+Source: git://git.kernel.org/pub/scm/linux/kernel/git/jic23/parrot.git
+
+Version: 362f6b3329cd8e799a298961b934ac4e839f0a7d
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/temperature/tmp007.txt)
 
 
 `tsl2591`
@@ -121,11 +199,27 @@ The default sensitivity has been modified from `0` to `1` as I found it much mor
 However, if you are leaving the sensor in some place dark or with direct sunlight,
 consider changing this value, or configure it dynamically in runtime.
 
-**Tested with DTS on a Pi 2**
+**Tested with DTS on a Pi 2.**
 
 Source: git://git.kernel.org/pub/scm/linux/kernel/git/jic23/parrot.git
 
 Version: 362f6b3329cd8e799a298961b934ac4e839f0a7d
+
+
+`vl6180`
+--------
+The `vl6180` is an in-tree driver for ST's revolutionary `VL6180X` time-of-flight (ToF) proximity sensor.
+Inside are an ambient light sensor and a laser range finder.
+The range is limited (tens of centimeters), but its successor `VL53L0X` is much better marketed,
+since these sensors are most useful for camera focus assist and decimeter range would be insufficient.
+
+**Test is in progress.**
+
+Source: git://git.kernel.org/pub/scm/linux/kernel/git/jic23/parrot.git
+
+Version: 362f6b3329cd8e799a298961b934ac4e839f0a7d
+
+[Documentation](https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/light/vl6180.txt)
 
 
 
