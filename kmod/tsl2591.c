@@ -302,7 +302,9 @@ static struct attribute_group tsl2591_attribute_group = {
 };
 
 static const struct iio_info tsl2591_info = {
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 	.read_raw      = &tsl2591_read_raw,
 	.attrs         = &tsl2591_attribute_group,
 };

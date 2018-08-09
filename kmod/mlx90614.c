@@ -30,6 +30,7 @@
 #include <linux/jiffies.h>
 #include <linux/gpio/consumer.h>
 #include <linux/pm_runtime.h>
+#include <linux/version.h>
 
 #include <linux/iio/iio.h>
 #include <linux/iio/sysfs.h>
@@ -400,7 +401,9 @@ static const struct iio_info mlx90614_info = {
 	.write_raw = mlx90614_write_raw,
 	.write_raw_get_fmt = mlx90614_write_raw_get_fmt,
 	.attrs = &mlx90614_attr_group,
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 };
 
 #ifdef CONFIG_PM

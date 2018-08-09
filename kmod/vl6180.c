@@ -24,6 +24,7 @@
 #include <linux/err.h>
 #include <linux/of.h>
 #include <linux/delay.h>
+#include <linux/version.h>
 
 #include <linux/iio/iio.h>
 #include <linux/iio/sysfs.h>
@@ -429,7 +430,9 @@ static const struct iio_info vl6180_info = {
 	.read_raw = vl6180_read_raw,
 	.write_raw = vl6180_write_raw,
 	.attrs = &vl6180_attribute_group,
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 };
 
 static int vl6180_init(struct vl6180_data *data)

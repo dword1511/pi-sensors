@@ -20,6 +20,7 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/iio/iio.h>
+#include <linux/version.h>
 
 //I2C device address:
 #define TSL2591_ADDR 0x29

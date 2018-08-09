@@ -22,6 +22,7 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
+#include <linux/version.h>
 #include <linux/slab.h>
 #include <linux/i2c.h>
 #include <linux/interrupt.h>
@@ -781,7 +782,9 @@ static const unsigned long ak8975_scan_masks[] = { 0x7, 0 };
 
 static const struct iio_info ak8975_info = {
 	.read_raw = &ak8975_read_raw,
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 };
 
 #ifdef CONFIG_ACPI

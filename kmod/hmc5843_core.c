@@ -28,6 +28,7 @@
 #include <linux/iio/buffer.h>
 #include <linux/iio/triggered_buffer.h>
 #include <linux/delay.h>
+#include <linux/version.h>
 
 #include "hmc5843.h"
 
@@ -597,7 +598,9 @@ static const struct iio_info hmc5843_info = {
 	.read_raw = &hmc5843_read_raw,
 	.write_raw = &hmc5843_write_raw,
 	.write_raw_get_fmt = &hmc5843_write_raw_get_fmt,
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 };
 
 static const unsigned long hmc5843_scan_masks[] = {0x7, 0};

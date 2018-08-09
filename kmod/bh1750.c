@@ -20,6 +20,7 @@
  *
  */
 
+#include <linux/version.h>
 #include <linux/delay.h>
 #include <linux/i2c.h>
 #include <linux/iio/iio.h>
@@ -217,7 +218,9 @@ static const struct attribute_group bh1750_attribute_group = {
 };
 
 static const struct iio_info bh1750_info = {
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 	.attrs = &bh1750_attribute_group,
 	.read_raw = bh1750_read_raw,
 	.write_raw = bh1750_write_raw,

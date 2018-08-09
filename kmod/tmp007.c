@@ -27,6 +27,7 @@
 #include <linux/of.h>
 #include <linux/irq.h>
 #include <linux/interrupt.h>
+#include <linux/version.h>
 
 #include <linux/iio/iio.h>
 #include <linux/iio/sysfs.h>
@@ -426,7 +427,9 @@ static const struct iio_info tmp007_info = {
 	.read_event_value = tmp007_read_thresh,
 	.write_event_value = tmp007_write_thresh,
 	.attrs = &tmp007_attribute_group,
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 15, 0)
 	.driver_module = THIS_MODULE,
+#endif
 };
 
 static bool tmp007_identify(struct i2c_client *client)
